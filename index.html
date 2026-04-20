@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        nav {
+            display: flex;
+            gap: 50px;
+            padding: 10px;
+
+        }
+
+        form {
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            row-gap: 5px;
+        }
+
+        form>input,
+        form>fieldset,
+        form>button,
+        form>select {
+            max-width: 200px;
+        }
+
+        .meal-results {
+            display: grid;
+            grid-template-columns: auto auto auto;
+
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <li>Home</li>
+        <li>Sign in</li>
+        <li>Sign up</li>
+        <li>Profile</li>
+        <li>Virtual Trainer</li>
+        <li>Exercises Tracking</li>
+        <li>Meal Generation</li>
+        <li>Meal Tracking</li>
+    </nav>
+    <div class="information-form">
+        <h2>Information</h2>
+        <form action="">
+            <label for="weight">Weight</label>
+            <input type="number" name="weight">
+            <label for="height">Height</label>
+            <input type="number" name="height">
+            <label for="age">Age</label>
+            <input type="number" name="age">
+            <fieldset>
+                <legend>Gender</legend>
+                <input type="radio" name="m">
+                <label for="gender">M</label>
+                <input type="radio" name="f">
+                <label for="gender">F</label>
+            </fieldset>
+            <label for="goal">Goal</label>
+            <select name="goal" id="goal-list">
+                <option value="">--Select goal--</option>
+                <option value="lose">Lose weight</option>
+                <option value="gain">Gain weight</option>
+                <option value="Keep">Keep weight</option>
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div class="bmi-result">
+        <h3>Results</h3>
+        <ul>
+            <li>BMI: XX</li>
+            <li>Target Calories: XX</li>
+            <li>Target Macros: XX Protiens, XX Fats, XX Carbs</li>
+        </ul>
+    </div>
+    <h3>Meal Generation</h3>
+    <div class="meal-results">
+
+        <div>
+            <h2>Breakfast</h2>
+            <ul>
+                <li>Food 1</li>
+                <li>Food 2</li>
+                <li>Food 3</li>
+            </ul>
+        </div>
+        <div>
+            <h2>Lunch</h2>
+            <ul>
+                <li>Food 1</li>
+                <li>Food 2</li>
+                <li>Food 3</li>
+            </ul>
+        </div>
+        <div>
+            <h2>Dinner</h2>
+            <ul>
+                <li>Food 1</li>
+                <li>Food 2</li>
+                <li>Food 3</li>
+            </ul>
+        </div>
+
+    </div>
+    <div class="Exercises">
+        <H2>Exercises (do the same for meals)</H2>
+        <h3>Routines</h3>
+        <ul>
+            <li>My Routine (clickable)</li>
+            <li>Other Routine (clickable)</li>
+        </ul>
+        <button type="button">New Routine</button>
+        <h3>Exercises (to choose from to add to routines)</h3>
+        <ul>
+            <li>Exercise 1</li>
+            <li>Exercise 2</li>
+            <li>Exercise 3</li>
+        </ul>
+    </div>
+    <div class="trainer">
+        <div style="border: 1px solid black; width: 500px; height: 250px;">VR Screen</div>
+        <div>
+            <h3>Available Exercises</h3>
+            <ul>
+                <li>Exercise 1 (clickable)</li>
+                <li>Exercise 2 (clickable)</li>
+                <li>Exercise 3 (clickable)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

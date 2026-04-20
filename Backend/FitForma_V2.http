@@ -1,0 +1,24 @@
+@FitForma_V2_HostAddress = http://localhost:5193
+
+GET {{FitForma_V2_HostAddress}}/user/
+Accept: application/json
+
+###
+
+POST {{FitForma_V2_HostAddress}}/user/
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "username": "john@example.com",
+  "age":20,
+  "gender":"f"
+}
+
+
+###
+
+Delete {{FitForma_V2_HostAddress}}/user/2
+Content-Type: application/json
+
+###
