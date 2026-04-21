@@ -45,5 +45,23 @@ public class UserController : ControllerBase
         await _userService.DeleteUser(id);
         return NoContent();;
     }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(int id, User user)
+    {
+        if (id != user.UserId)
+        {
+            return BadRequest("ID mismatch");
+        }
+        try
+        {
+            await _userService.UpdateUser(user);
+            return NoContent();
+        }
+        catch (System.Exception e)
+        {
+            
+            return NotFound(e.Message);
+        }
+    }
      
 }

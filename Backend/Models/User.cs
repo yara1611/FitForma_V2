@@ -9,6 +9,7 @@ public class User{
     public string Password {set;get;} //will be hashed
     
     public DateTime CreatedAt {set;get;}
+    public DateTime UpdatedAt {set;get;}
 
     // Navigation Properties
     public virtual PersonalInformation? PersonalInfo { get; set; }

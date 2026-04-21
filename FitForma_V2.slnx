@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/FitForma_V2.csproj" />
+  </Folder>
+  <Project Path="Backend.Tests/Backend.Tests.csproj" />
+</Solution>

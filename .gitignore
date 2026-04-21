@@ -1,47 +1,41 @@
-## --- Build Artifacts ---
-[Bb]in/
-[Oo]bj/
-[Dd]ebug/
-[Rr]elease/
-x64/
-x86/
-[Aa]rm/
-[Aa]rm64/
+## --- Build Artifacts (Covers Backend & Backend.Tests) ---
+**/[Bb]in/
+**/[Oo]bj/
+**/[Dd]ebug/
+**/[Rr]elease/
 
 ## --- Visual Studio & IDEs ---
 .vs/
+.vscode/
 *.user
+*.suo
 *.userosscache
 *.sln.docstates
-*.suo
-.vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-## --- NuGet Packages ---
-*.nupkg
-# Restore artifacts
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-## --- Secrets & Local Config ---
-# Never commit actual secrets!
-UserSecretsId
-[Ss]ettings.user.json
-appsettings.Development.json
-appsettings.json
-*.pfx
-*.publishsettings
-
-## --- Operating System Files ---
-.DS_Store
-Thumbs.db
 
 ## --- Test & Coverage ---
 TestResults/
 *.sequenced
 Actual/
 BenchmarkDotNet.Artifacts/
+# Ignore coverage reports
+**/coverage.cobertura.xml
+**/coverage.json
+
+## --- NuGet Packages ---
+*.nupkg
+# Restore artifacts
+project.lock.json
+project.fragment.lock.json
+
+## --- Secrets & Local Config ---
+# Never commit actual secrets!
+UserSecretsId
+[Ss]ettings.user.json
+**/appsettings.Development.json
+**/appsettings.json
+*.pfx
+*.publishsettings
+
+## --- Operating System Files ---
+.DS_Store
+Thumbs.db

@@ -37,6 +37,17 @@ public class UserService{
        await _userRepo.DeleteAsync(user);
     }
 
+
+    public async Task UpdateUser(User user)
+    {
+        var exisitingUser = await _userRepo.GetByIdAsync(user.UserId);
+        if (exisitingUser == null)
+        {
+            throw new Exception("User not found.");
+        }
+        await _userRepo.UpdateAsync(user);
+    }
+
     //PERSONAL INFO
     public async Task CreatePersonalInfoAsync(int id,PersonalInformation pi)
     {

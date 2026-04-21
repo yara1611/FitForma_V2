@@ -17,7 +17,7 @@ Content-Type: application/json
 
 ###
 
-Delete {{FitForma_V2_HostAddress}}/user/1
+Delete {{FitForma_V2_HostAddress}}/user/2
 Content-Type: application/json
 
 ###
