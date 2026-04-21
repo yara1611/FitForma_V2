@@ -2,7 +2,7 @@
 
 **FitForma V2** is a backend fitness management system built with **.NET 9.0+**. It is designed to provide a high-performance foundation for personalized nutrition tracking, workout routine management, and biometric optimization.
 
-The system leverages a modern, layered architecture to ensure scalability and seamless integration with relational databases like **PostgreSQL** or **SQL Server**.
+The system leverages a modern, layered architecture to ensure scalability and seamless integration with relational databases like **PostgreSQL** for now.
 
 ---
 
