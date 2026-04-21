@@ -32,6 +32,7 @@ artifacts/
 UserSecretsId
 [Ss]ettings.user.json
 appsettings.Development.json
+appsettings.json
 *.pfx
 *.publishsettings
 
