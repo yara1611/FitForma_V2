@@ -10,30 +10,40 @@ public class UserController : ControllerBase
         _userService=userService;
     }
     [HttpGet]
-    public IActionResult GetUsers()
+    public async Task<IActionResult> GetUsers()
     {
-        return Ok(_userService.ListAllUsers());
+        return Ok(await _userService.ListAllUsers());
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetUser(int id)
+    public async Task<IActionResult> GetUserAsync(int id)
     {
-        return Ok(_userService.ListUser(id));
+        try
+        {
+            var user = await _userService.ListUser(id);
+            return Ok(user);
+        }
+        catch(Exception)
+        {
+            return NotFound("User not found or has been deleted.");
+        }
+        
     }
 
     [HttpPost]
-    public IActionResult CreateUser(User user)
+    public async Task<IActionResult> CreateUser(User user)
     {
-        _userService.CreateUser(user);
+        await _userService.CreateUser(user);
         
         return Ok(user);
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteUser(int id)
+    public async Task<IActionResult> DeleteUser(int id)
     {
-        _userService.DeleteUser(id);
-        return Ok("Deleted");
+        
+        await _userService.DeleteUser(id);
+        return NoContent();;
     }
      
 }

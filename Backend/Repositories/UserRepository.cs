@@ -1,39 +1,50 @@
+using Microsoft.EntityFrameworkCore;
 public interface IUserRepository
 {
     Task<User> GetByIdAsync(int id);
     Task<IEnumerable<User>> GetAllAsync();
     Task AddAsync(User user);
     Task UpdateAsync(User user);
-    Task DeleteAsync(int id);
+    Task DeleteAsync(User user);
+    Task AddPersonalInfoAsync(PersonalInformation pi);
 }
 public class UserRepository : IUserRepository
 {
 
-    //private readonly AppDbContext _context;
-    //public UserRepository(AppDbContext context) => _context = context;
-    
-    public Task AddAsync(User user)
+    private readonly AppDbContext _context;
+    public UserRepository(AppDbContext context) => _context = context;
+
+    public async Task AddAsync(User user)
     {
-        throw new NotImplementedException();
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(int id)
+    public async Task DeleteAsync(User user)
     {
-        throw new NotImplementedException();
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<User>> GetAllAsync()
+    public async Task<IEnumerable<User>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Users.ToListAsync();
     }
 
-    public Task<User> GetByIdAsync(int id)
+    public async Task<User> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FindAsync(id);
     }
 
-    public Task UpdateAsync(User user)
+    public async Task UpdateAsync(User user)
     {
-        throw new NotImplementedException();
+        _context.Users.Update(user);
+        await Task.CompletedTask;
+        await _context.SaveChangesAsync();
+    }
+    public async Task AddPersonalInfoAsync(PersonalInformation pi)
+    {
+        await _context.PersonalInformation.AddAsync(pi);
+        await _context.SaveChangesAsync(); // Ensures the info is saved to Post
     }
 }

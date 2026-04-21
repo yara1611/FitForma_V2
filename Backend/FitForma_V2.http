@@ -10,15 +10,14 @@ Content-Type: application/json
 
 {
   "name": "John Doe",
-  "username": "john@example.com",
-  "age":20,
-  "gender":"f"
+  "email": "john@example.com",
+  "password":"123"
 }
 
 
 ###
 
-Delete {{FitForma_V2_HostAddress}}/user/2
+Delete {{FitForma_V2_HostAddress}}/user/1
 Content-Type: application/json
 
 ###

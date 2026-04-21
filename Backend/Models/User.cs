@@ -11,7 +11,7 @@ public class User{
     public DateTime CreatedAt {set;get;}
 
     // Navigation Properties
-    public virtual PersonalInformation PersonalInfo { get; set; }
+    public virtual PersonalInformation? PersonalInfo { get; set; }
     public virtual List<ExerciseRoutine> Routines { get; set; } = new();
     public virtual List<MealPlan> MealPlans { get; set; } = new();
 }

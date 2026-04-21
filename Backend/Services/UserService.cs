@@ -1,36 +1,49 @@
 public class UserService{
-    private static List<User> users = new List<User>();
-    private static List<PersonalInformation> pis = new List<PersonalInformation>();
-    public void CreateUser(User user)
+    
+    private readonly IUserRepository _userRepo;
+    public UserService(IUserRepository userRepo)
     {
-        user.UserId=users.Count+1;
-        users.Add(user);
+        _userRepo=userRepo;
+    }
+    
+    public async Task CreateUser(User user)
+    {
+        await _userRepo.AddAsync(user);
         
     }
 
-    public List<User> ListAllUsers()
+    public async Task<List<User>> ListAllUsers()
     {
-        return users;
+        var users = await _userRepo.GetAllAsync();
+        return users.ToList();
     }
-    public User ListUser(int id)
+    public async Task<User> ListUser(int id)
     {
-        return users[id-1];
-    }
-
-    public void DeleteUser(int id)
-    {
-        if (id > users.Count)
+        var user =await _userRepo.GetByIdAsync(id);
+        if (user==null)
         {
             throw new Exception("User not found");
         }
-        users.RemoveAt(id-1);
+        return user;
     }
 
-    public void CreatePersonalInfo(int id,PersonalInformation pi)
+    public async Task DeleteUser(int id)
     {
-        var user = users[id-1]; //repo later
+        var user = await _userRepo.GetByIdAsync(id);
+        if (user==null)
+        {
+            throw new Exception("User not found");
+        }
+       await _userRepo.DeleteAsync(user);
+    }
+
+    //PERSONAL INFO
+    public async Task CreatePersonalInfoAsync(int id,PersonalInformation pi)
+    {
+        var user = _userRepo.GetByIdAsync(id);
         if (user == null) throw new Exception("User not found");
         pi.UserId = id;
+        await _userRepo.AddPersonalInfoAsync(pi);
         
     }
 }

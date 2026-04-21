@@ -1,13 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 
-
-// builder.Services.AddDbContext<AppDbContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// OR: options.UseNpgsql() for PostgreSQL not sure yet
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+builder.Services.AddDbContext<AppDbContext>(options =>
+     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// OR: options.UUseSqlServer() for PostgreSQL not sure yet
 
 //Repos (scoped -> one instance per HTTP request)
 builder.Services.AddScoped<IUserRepository,UserRepository>();
