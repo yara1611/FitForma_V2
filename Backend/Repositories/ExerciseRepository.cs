@@ -2,19 +2,26 @@ using Microsoft.EntityFrameworkCore;
 
 public interface IExerciseRepository
 {
-    Task<ExerciseRoutine> GetExerciseRoutineAsync(int routineId);
+    //Why async?
+    /*
+    Repository methods are async because they perform I/O operations (database calls) 
+    and async prevents blocking threads, improving scalability in web APIs
+    */
+    Task<ExerciseRoutine> GetRoutineByIdAsync(int routineId);
     Task AddRoutineAsync(ExerciseRoutine routine);
     Task RemoveRoutineAsync(ExerciseRoutine routine);
     Task UpdateRoutineAsync(ExerciseRoutine routine);
-    Task<IEnumerable<ExerciseRoutine>> GetAllRoutinesAsync();
+    Task<List<ExerciseRoutine>> GetAllRoutinesAsync();
+    Task RemoveExercisesInRoutineAsync(int routineId);
     //Task<ExerciseRoutine> FindRoutineByName(string name)
+    Task RemoveFromRoutineAsync(int routineId, int exerciseId);
 
-    Task<Exercise> GetExerciseAsync(int exerciseId);
+    Task<Exercise> GetExerciseByIdAsync(int exerciseId);
     Task AddExerciseAsync(Exercise exercise);
-    Task RemoveExerciseAsync(Exercise Exercise);
+    Task RemoveExerciseAsync(Exercise exercise);
     //Task UpdateExerciseAsync(ExerciseRoutine Routine);
-    Task<IEnumerable<Exercise>> GetAllExercisesAsync();
-    Task<IEnumerable<Exercise>> FindAllExercisesInRoutine(int routineId);
+    Task<List<Exercise>> GetAllExercisesAsync();
+    Task<List<Exercise>> FindAllExercisesInRoutineAsync(int routineId);
 }
 
 public class ExerciseRepository : IExerciseRepository
@@ -35,7 +42,7 @@ public class ExerciseRepository : IExerciseRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ExerciseRoutine> GetExerciseRoutineAsync(int routineId)
+    public async Task<ExerciseRoutine> GetRoutineByIdAsync(int routineId)
     {
         return await _context.Routines.FindAsync(routineId);
     }
@@ -43,13 +50,13 @@ public class ExerciseRepository : IExerciseRepository
     public async Task UpdateRoutineAsync(ExerciseRoutine routine)
     {
         _context.Routines.Update(routine);
-        
+
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<ExerciseRoutine>> GetAllRoutinesAsync()
+    public async Task<List<ExerciseRoutine>> GetAllRoutinesAsync()
     {
-        return await _context.Routines.ToListAsync();
+        return await _context.Routines.AsNoTracking().ToListAsync();
     }
     #endregion
 
@@ -66,24 +73,48 @@ public class ExerciseRepository : IExerciseRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Exercise> GetExerciseAsync(int exerciseId)
+    public async Task<Exercise> GetExerciseByIdAsync(int exerciseId)
     {
-        return await _context.Exercises.FindAsync(exerciseId);
+        return await _context.Exercises.AsNoTracking()
+        .FirstOrDefaultAsync(e => e.ExerciseId == exerciseId);
     }
 
 
-    public async Task<IEnumerable<Exercise>> GetAllExercisesAsync()
+    public async Task<List<Exercise>> GetAllExercisesAsync()
     {
         return await _context.Exercises.ToListAsync();
     }
 
     //get all Exercises with RoutineId
-    public async Task<IEnumerable<Exercise>> FindAllExercisesInRoutine(int routineId)
+    public async Task<List<Exercise>> FindAllExercisesInRoutineAsync(int routineId)
     {
-        return await _context.Exercises.Where(m => m.RoutineId==routineId).ToListAsync();
+        var exists = await _context.Routines.AnyAsync(r => r.RoutineId == routineId);
+
+        if (!exists)
+            throw new KeyNotFoundException("Routine not found");
+        //ass no tracking faster and less memory
+        return await _context.Exercises.Where(m => m.RoutineId == routineId).AsNoTracking().ToListAsync();
     }
 
-    
+    public async Task RemoveExercisesInRoutineAsync(int routineId)
+    {
+        await _context.Exercises.Where(e => e.RoutineId == routineId).ExecuteDeleteAsync();
+
+    }
+
+    public async Task RemoveFromRoutineAsync(int routineId, int exerciseId)
+    {
+        var exercise = await _context.Exercises
+        .FirstOrDefaultAsync(e => e.RoutineId == routineId && e.ExerciseId == exerciseId);
+        if (exercise == null)
+            throw new KeyNotFoundException("Exercise not found in routine");
+
+        _context.Exercises.Remove(exercise);
+        await _context.SaveChangesAsync();
+
+    }
+
+
     #endregion
 
 }

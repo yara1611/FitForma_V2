@@ -5,14 +5,13 @@ public class ExerciseRoutine
 {
     [Key]
     public int RoutineId {set;get;}
-
-    [ForeignKey("UserId")]
     public int UserId {set;get;} //one to many (user can have many routines)
-    public string Name {set;get;}
-    public string Description {set;get;}
-    public DateTime CreatedAt {set;get;}
+    public string Name {set;get;}="New Routine";
+    public string? Description {set;get;}
+    public DateTime CreatedAt {set;get;} = DateTime.UtcNow;
+    public DateTime UpdatedAt {set;get;} = DateTime.UtcNow;
 
     //Navigation Properties
-    public virtual User User { get; set; }
+    public virtual User User { get; set; }=null!;
     public virtual List<Exercise> Exercises { get; set; } = new();
 }

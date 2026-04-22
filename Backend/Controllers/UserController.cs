@@ -12,7 +12,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
-        return Ok(await _userService.ListAllUsers());
+        return Ok(await _userService.ListAllUsersAsync());
     }
 
     [HttpGet("{id}")]
@@ -20,7 +20,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var user = await _userService.ListUser(id);
+            var user = await _userService.ListUserAsync(id);
             return Ok(user);
         }
         catch(Exception)
@@ -33,7 +33,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateUser(User user)
     {
-        await _userService.CreateUser(user);
+        await _userService.CreateUserAsync(user);
         
         return Ok(user);
     }
@@ -42,7 +42,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> DeleteUser(int id)
     {
         
-        await _userService.DeleteUser(id);
+        await _userService.DeleteUserAsync(id);
         return NoContent();;
     }
     [HttpPut("{id}")]
@@ -54,7 +54,7 @@ public class UserController : ControllerBase
         }
         try
         {
-            await _userService.UpdateUser(user);
+            await _userService.UpdateUserAsync(user);
             return NoContent();
         }
         catch (System.Exception e)

@@ -6,18 +6,18 @@ public class UserService{
         _userRepo=userRepo;
     }
     
-    public async Task CreateUser(User user)
+    public async Task CreateUserAsync(User user)
     {
         await _userRepo.AddAsync(user);
         
     }
 
-    public async Task<List<User>> ListAllUsers()
+    public async Task<List<User>> ListAllUsersAsync()
     {
         var users = await _userRepo.GetAllAsync();
         return users.ToList();
     }
-    public async Task<User> ListUser(int id)
+    public async Task<User> ListUserAsync(int id)
     {
         var user =await _userRepo.GetByIdAsync(id);
         if (user==null)
@@ -27,31 +27,29 @@ public class UserService{
         return user;
     }
 
-    public async Task DeleteUser(int id)
+    public async Task DeleteUserAsync(int id)
     {
-        var user = await _userRepo.GetByIdAsync(id);
-        if (user==null)
-        {
-            throw new Exception("User not found");
-        }
-       await _userRepo.DeleteAsync(user);
+        
+       await _userRepo.DeleteAsync(id);
     }
 
 
-    public async Task UpdateUser(User user)
+    public async Task UpdateUserAsync(User user)
     {
         var exisitingUser = await _userRepo.GetByIdAsync(user.UserId);
         if (exisitingUser == null)
         {
             throw new Exception("User not found.");
         }
+        exisitingUser.Name=user.Name;
+        exisitingUser.Email=user.Email;
         await _userRepo.UpdateAsync(user);
     }
 
     //PERSONAL INFO
     public async Task CreatePersonalInfoAsync(int id,PersonalInformation pi)
     {
-        var user = _userRepo.GetByIdAsync(id);
+        var user = await _userRepo.GetByIdAsync(id);
         if (user == null) throw new Exception("User not found");
         pi.UserId = id;
         await _userRepo.AddPersonalInfoAsync(pi);

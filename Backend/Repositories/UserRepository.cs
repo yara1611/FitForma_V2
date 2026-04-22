@@ -2,10 +2,10 @@ using Microsoft.EntityFrameworkCore;
 public interface IUserRepository
 {
     Task<User> GetByIdAsync(int id);
-    Task<IEnumerable<User>> GetAllAsync();
+    Task<List<User>> GetAllAsync();
     Task AddAsync(User user);
     Task UpdateAsync(User user);
-    Task DeleteAsync(User user);
+    Task DeleteAsync(int id);
     Task AddPersonalInfoAsync(PersonalInformation pi);
 }
 public class UserRepository : IUserRepository
@@ -20,19 +20,22 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(User user)
+    public async Task DeleteAsync(int id)
     {
+        var user = await _context.Users.FindAsync(id);
+        if(user==null) throw new KeyNotFoundException("User not Found");
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<User>> GetAllAsync()
+    public async Task<List<User>> GetAllAsync()
     {
-        return await _context.Users.ToListAsync();
+        return await _context.Users.AsNoTracking().ToListAsync();
     }
 
-    public async Task<User> GetByIdAsync(int id)
-    {
+    public async Task<User?> GetByIdAsync(int id)
+    {   
+        
         return await _context.Users.FindAsync(id);
     }
 
@@ -44,6 +47,9 @@ public class UserRepository : IUserRepository
     }
     public async Task AddPersonalInfoAsync(PersonalInformation pi)
     {
+        var exists = await _context.PersonalInformation.AnyAsync(i=>i.UserId==pi.UserId);
+        if(exists)
+            throw new InvalidOperationException("Personal info already exists for this user");
         await _context.PersonalInformation.AddAsync(pi);
         await _context.SaveChangesAsync(); // Ensures the info is saved to Post
     }

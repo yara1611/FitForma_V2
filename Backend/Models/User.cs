@@ -4,12 +4,12 @@ public class User{
 
     [Key]
     public int UserId {set;get;}
-    public string Name {set;get;}
-    public string Email {set;get;}
-    public string Password {set;get;} //will be hashed
+    public string Name {set;get;} = null!;
+    public string Email {set;get;} = null!;
+    public string Password {set;get;}  = null!;//will be hashed
     
-    public DateTime CreatedAt {set;get;}
-    public DateTime UpdatedAt {set;get;}
+    public DateTime CreatedAt {set;get;}= DateTime.UtcNow;
+    public DateTime UpdatedAt {set;get;}= DateTime.UtcNow;
 
     // Navigation Properties
     public virtual PersonalInformation? PersonalInfo { get; set; }

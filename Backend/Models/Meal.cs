@@ -1,18 +1,20 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 public class Meal
 {
     [Key]
     public int MealId {get;set;}
-    [ForeignKey("PlanId")]
     public int PlanId {get;set;}
-    public string Name {get;set;}
+    public string Name {get;set;}= null!;
+    [Range(0, 5000)]
     public double Calories {get;set;}
+    [Range(0, 5000)]
     public double Protein {get;set;}
+    [Range(0, 5000)]
     public double Fats {get;set;}
+    [Range(0, 5000)]
     public double Carbs {get;set;}
 
     //Navigation Properties
-    public virtual MealPlan Plan { get; set; }
+    public virtual MealPlan Plan { get; set; }= null!;
 }
