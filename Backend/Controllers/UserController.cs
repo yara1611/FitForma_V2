@@ -35,7 +35,7 @@ public class UserController : ControllerBase
     {
         await _userService.CreateUserAsync(user);
         
-        return Ok(user);
+        return Ok(new { user.UserId, user.Name, user.Email });
     }
 
     [HttpDelete("{id}")]
@@ -46,7 +46,7 @@ public class UserController : ControllerBase
         return NoContent();;
     }
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(int id, User user)
+    public async Task<IActionResult> UpdateUser(int id, User user) //DTO later
     {
         if (id != user.UserId)
         {
@@ -57,7 +57,7 @@ public class UserController : ControllerBase
             await _userService.UpdateUserAsync(user);
             return NoContent();
         }
-        catch (System.Exception e)
+        catch (KeyNotFoundException e)
         {
             
             return NotFound(e.Message);
