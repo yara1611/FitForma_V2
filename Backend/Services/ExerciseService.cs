@@ -30,14 +30,16 @@ public class ExerciseService
     #endregion
 
     #region Routine
-    public async Task CreateRoutineAsync(ExerciseRoutine routine)
+    public async Task CreateRoutineAsync(ExerciseRoutine routine,int userId)
     {
+        routine.UserId=userId;
+        
 
         await _exerciseRepo.AddRoutineAsync(routine);
     }
     public async Task DeleteFromRoutineAsync(int routineId, int exerciseId)
     {
-        await _exerciseRepo.RemoveFromRoutineAsync(routineId,exerciseId);
+        await _exerciseRepo.RemoveFromRoutineAsync(routineId, exerciseId);
     }
 
     public async Task DeleteRoutineAsync(int id)
@@ -91,14 +93,17 @@ public class ExerciseService
         return await _exerciseRepo.GetRoutineByIdAsync(id);
     }
 
-    public async Task EditRoutineAsync(ExerciseRoutine routine)
+    public async Task EditRoutineAsync(int id, ExerciseRoutine routine)
     {
-        var existingRoutine = await _exerciseRepo.GetRoutineByIdAsync(routine.RoutineId);
+        var existingRoutine = await _exerciseRepo.GetRoutineByIdAsync(id);
         if (existingRoutine == null)
         {
             throw new KeyNotFoundException("Routine not found.");
         }
-        await _exerciseRepo.UpdateRoutineAsync(routine);
+        existingRoutine.Name = routine.Name;
+        existingRoutine.Description = routine.Description;
+        existingRoutine.UpdatedAt = DateTime.UtcNow;
+        await _exerciseRepo.UpdateRoutineAsync(existingRoutine);
     }
     #endregion
 }
