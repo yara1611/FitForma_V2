@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitForma_V2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260422182703_InitialCreate")]
+    [Migration("20260422220205_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

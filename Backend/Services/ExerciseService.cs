@@ -30,10 +30,10 @@ public class ExerciseService
     #endregion
 
     #region Routine
-    public async Task CreateRoutineAsync(ExerciseRoutine routine,int userId)
+    public async Task CreateRoutineAsync(ExerciseRoutine routine, int userId)
     {
-        routine.UserId=userId;
-        
+        routine.UserId = userId;
+
 
         await _exerciseRepo.AddRoutineAsync(routine);
     }
@@ -63,18 +63,14 @@ public class ExerciseService
     public async Task AddExerciseToRoutineAsync(int routineId, Exercise exercise)
     {
         var routine = await _exerciseRepo.GetRoutineByIdAsync(routineId);
+
         if (routine == null)
             throw new KeyNotFoundException("Routine not found");
 
-        if (routine.Exercises == null)
-            throw new InvalidOperationException("Routine exercises not loaded");
+        // attach exercise to routine
+        exercise.RoutineId = routineId;
 
-        if (routine.Exercises.Any(e => e.ExerciseId == exercise.ExerciseId))
-            throw new InvalidOperationException("Exercise already exists in routine");
-        routine.Exercises.Add(exercise);
-
-        //update routine and save it
-        await _exerciseRepo.UpdateRoutineAsync(routine);
+        await _exerciseRepo.AddExerciseAsync(exercise);
     }
 
     public async Task<List<Exercise>> ListRoutineContentAsync(int routineId)

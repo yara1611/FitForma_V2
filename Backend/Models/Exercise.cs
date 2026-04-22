@@ -14,5 +14,5 @@ public class Exercise
     public int RestSeconds{set;get;}=0;
 
     //Navigation Properties
-    public virtual ExerciseRoutine Routine { get; set; }=null!;
+    public virtual ExerciseRoutine? Routine { get; set; }
 }
