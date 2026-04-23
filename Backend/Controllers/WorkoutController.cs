@@ -9,11 +9,12 @@ GET WORKOUT CONTENT
 PUT ROUTINE
 POST EXERCISE (TO WORKOUT)
 DELETE EXERCISE (FROM WORKOUT AND DB)
+GET ALL WORKOUTS (of user)
+GET Exercise
 ------------
 NOT DONE:
-GET ALL WORKOUTS (of user)
 PUT EXERCISE
-GET Exercise
+
 */
 [ApiController]
 [Route("[controller]")]
@@ -66,6 +67,12 @@ public class WorkoutController : ControllerBase
         return Ok(dto);
     }
 
+
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetWorkoutsByUserIdAsync(int userId)
+    {
+        return Ok(await _service.GetAllRoutinesByUserId(userId));
+    }
 
     //Exercises
     [HttpPost("{routineId}/exercises")]

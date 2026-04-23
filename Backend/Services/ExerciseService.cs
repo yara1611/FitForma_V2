@@ -103,5 +103,11 @@ public class ExerciseService
         existingRoutine.UpdatedAt = DateTime.UtcNow;
         await _exerciseRepo.UpdateRoutineAsync(existingRoutine);
     }
+
+    public async Task<List<ExerciseRoutine>> GetAllRoutinesByUserId(int userId)
+    {
+        var list = await _exerciseRepo.GetAllRoutinesByUserId(userId);
+        return list;
+    }
     #endregion
 }

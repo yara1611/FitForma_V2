@@ -9,10 +9,10 @@ GET PLAN CONTENT
 PUT PLAN
 POST MEAL (TO PLAN)
 DELETE MEAL (FROM PLAN AND DB)
+GET MEAL
+GET ALL PLANS (of user)
 ------------
 NOT DONE:
-GET ALL PLANS (of user)
-GET MEAL
 PUT MEAL
 
 */
@@ -67,6 +67,11 @@ public class MealPlanController : ControllerBase
         return Ok(dto);
     }
 
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetMealPlansByUserIdAsync(int userId)
+    {
+        return Ok(await _service.GetAllPlansByUserId(userId));
+    }
 
     //Meals
     [HttpPost("{planId}/meals")]
@@ -95,6 +100,7 @@ public class MealPlanController : ControllerBase
         
         return Ok(await _service.ListPlanContentAsync(planId));
     }
+
 
     [HttpGet("{planId}/meals/{mealId}")]
     public async Task<IActionResult> GetExercise(int planId,int mealId)

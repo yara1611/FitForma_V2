@@ -13,7 +13,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-// OR: options.UseSqlServer() for PostgreSQL not sure yet
+// OR: options.UseSqlServer() for Sql server not sure yet
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 

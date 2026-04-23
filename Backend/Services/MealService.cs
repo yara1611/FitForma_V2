@@ -21,6 +21,7 @@ public class MealService
         return await _mealRepo.GetMealByIdAsync(id);
     }
 
+
     public async Task DeleteMealAsync(int id)
     {
         var meal = await _mealRepo.GetMealByIdAsync(id);
@@ -100,5 +101,13 @@ public class MealService
         existingPlan.UpdatedAt = DateTime.UtcNow;
         await _mealRepo.UpdatePlanAsync(existingPlan);
     }
+
+
+    public async Task<List<MealPlan>> GetAllPlansByUserId(int userId)
+    {
+        var list = await _mealRepo.GetAllPlansByUserId(userId);
+        return list;
+    }
+
     #endregion
 }
