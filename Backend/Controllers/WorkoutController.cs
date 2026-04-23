@@ -1,31 +1,55 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-
+/*
+ENDPOINTS FOR NOW
+GET WORKOUT
+POST WORKOUT
+DELETE WORKOUT
+GET WORKOUT CONTENT
+PUT ROUTINE
+POST EXERCISE (TO WORKOUT)
+DELETE EXERCISE (FROM WORKOUT AND DB)
+------------
+NOT DONE:
+GET ALL WORKOUTS (of user)
+PUT EXERCISE
+GET Exercise
+*/
 [ApiController]
 [Route("[controller]")]
 public class WorkoutController : ControllerBase
 {
     private readonly ExerciseService _service;
-    public WorkoutController(ExerciseService service)
+    private readonly IMapper _mapper;
+    public WorkoutController(ExerciseService service,IMapper mapper)
     {
         _service = service;
+        _mapper=mapper;
     }
 
+
+    //TESTS
+    //Exists -> 200
+    //NOT -> 204
     [HttpGet("{id}")]
     public async Task<IActionResult> GetRoutine(int id)
     {
-        return Ok(await _service.GetRoutineAsync(id));
+        var routine = await _service.GetRoutineAsync(id); 
+        if(routine==null)
+            return NoContent();
+        return Ok(routine);
     }
+    
+    //ROutine not exists -> create -> 200
+    //Exists -> duplicate key
     [HttpPost]
     public async Task<IActionResult> CreateRoutine([FromBody] CreateRoutineDto dto, int userId)
     {
-        var routine = new ExerciseRoutine
-        {
-            Name = dto.Name,
-            Description = dto.Description
-        };
+        var routine = _mapper.Map<ExerciseRoutine>(dto);
         await _service.CreateRoutineAsync(routine, userId);
         return Ok(routine);
     }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRoutine(int id)
     {
@@ -33,12 +57,13 @@ public class WorkoutController : ControllerBase
         return NoContent();
     }
 
-    //edit is tricky for me
+    
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateRoutine(int id, [FromBody] ExerciseRoutine routine)
+    public async Task<IActionResult> UpdateRoutine(int id, [FromBody] UpdateRoutineDto dto)
     {
-        await _service.EditRoutineAsync(id, routine);
-        return Ok(routine);
+        
+        await _service.EditRoutineAsync(id, dto);
+        return Ok(dto);
     }
 
 
@@ -46,15 +71,7 @@ public class WorkoutController : ControllerBase
     [HttpPost("{routineId}/exercises")]
     public async Task<IActionResult> AddToRoutine(int routineId,[FromBody]CreateExerciseDto dto)
     {
-        var exercise = new Exercise
-    {
-        Name = dto.Name,
-        TargetMuscle = dto.TargetMuscle,
-        Sets = dto.Sets,
-        Reps = dto.Reps,
-        RestSeconds = dto.RestSeconds,
-        RoutineId = routineId
-    };
+        var exercise = _mapper.Map<Exercise>(dto);
         if (exercise == null)
             return BadRequest("Exercise is required");
         await _service.AddExerciseToRoutineAsync(routineId,exercise);
@@ -65,7 +82,7 @@ public class WorkoutController : ControllerBase
     [HttpDelete("{routineId}/exercises/{exerciseId}")]
     public async Task<IActionResult> DeleteFromRoutine(int routineId, int exerciseId)
     {
-        //check if not empty in service
+        
         await _service.DeleteFromRoutineAsync(routineId,exerciseId);
         
         return NoContent();
@@ -78,4 +95,10 @@ public class WorkoutController : ControllerBase
         return Ok(await _service.ListRoutineContentAsync(routineId));
     }
 
+    [HttpGet("{routineId}/exercises/{exerciseId}")]
+    public async Task<IActionResult> GetExercise(int routineId,int exerciseId)
+    {
+        
+        return Ok(await _service.GetExerciseAsync(exerciseId));
+    }
 }

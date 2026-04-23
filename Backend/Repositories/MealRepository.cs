@@ -11,9 +11,10 @@ public interface IMealRepository
     Task AddPlanAsync(MealPlan plan);
     Task RemovePlanAsync(MealPlan plan);
     Task UpdatePlanAsync(MealPlan plan);
-    Task<List<MealPlan>> GetAllPlansAsync();
+    //Task<List<MealPlan>> GetAllPlansAsync();
     Task RemoveMealsInPlanAsync(int planId);
     //Task<MealPlan> FindPlanByName(string name)
+    Task<List<MealPlan>> GetAllPlansByUserId(int userId);
     Task RemoveFromPlanAsync(int planId, int mealId);
 
     Task<Meal> GetMealByIdAsync(int mealId);
@@ -32,6 +33,10 @@ public class MealRepository : IMealRepository
     #region Plan
     public async Task AddPlanAsync(MealPlan plan)
     {
+        // if (_context.Plans.FindAsync(plan.PlanId) != null)
+        // {
+        //     throw new Exception("Already Exists");
+        // }
         await _context.Plans.AddAsync(plan);
         await _context.SaveChangesAsync();
     }
@@ -54,10 +59,11 @@ public class MealRepository : IMealRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<MealPlan>> GetAllPlansAsync()
-    {
-        return await _context.Plans.AsNoTracking().ToListAsync();
-    }
+    // public async Task<List<MealPlan>> GetAllPlansAsync()
+    // {
+    //     return await _context.Plans.AsNoTracking().ToListAsync();
+    // }
+
     #endregion
 
     #region Meal
@@ -77,6 +83,16 @@ public class MealRepository : IMealRepository
     {
         return await _context.Meals.AsNoTracking()
         .FirstOrDefaultAsync(e => e.MealId == mealId);
+    }
+
+    public async Task<List<MealPlan>> GetAllPlansByUserId(int userId)
+    {
+        var exists = await _context.Users.AnyAsync(u => u.UserId == userId);
+
+        if (!exists)
+            throw new KeyNotFoundException("Plan not found");
+        //as no tracking faster and less memory
+        return await _context.Plans.Where(r => r.UserId == userId).AsNoTracking().ToListAsync();
     }
 
 

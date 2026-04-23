@@ -1,9 +1,13 @@
+using AutoMapper;
+
 public class ExerciseService
 {
     private readonly IExerciseRepository _exerciseRepo;
-    public ExerciseService(IExerciseRepository exerciseRepo)
+    private readonly IMapper _mapper;
+    public ExerciseService(IExerciseRepository exerciseRepo,IMapper mapper)
     {
         _exerciseRepo = exerciseRepo;
+        _mapper=mapper;
     }
 
     #region Exercise
@@ -32,6 +36,7 @@ public class ExerciseService
     #region Routine
     public async Task CreateRoutineAsync(ExerciseRoutine routine, int userId)
     {
+        
         routine.UserId = userId;
 
 
@@ -89,15 +94,12 @@ public class ExerciseService
         return await _exerciseRepo.GetRoutineByIdAsync(id);
     }
 
-    public async Task EditRoutineAsync(int id, ExerciseRoutine routine)
+    public async Task EditRoutineAsync(int id, UpdateRoutineDto dto)
     {
         var existingRoutine = await _exerciseRepo.GetRoutineByIdAsync(id);
         if (existingRoutine == null)
-        {
             throw new KeyNotFoundException("Routine not found.");
-        }
-        existingRoutine.Name = routine.Name;
-        existingRoutine.Description = routine.Description;
+        _mapper.Map(dto,existingRoutine);
         existingRoutine.UpdatedAt = DateTime.UtcNow;
         await _exerciseRepo.UpdateRoutineAsync(existingRoutine);
     }

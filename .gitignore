@@ -39,3 +39,6 @@ UserSecretsId
 ## --- Operating System Files ---
 .DS_Store
 Thumbs.db
+
+## --- Misc ---
+Backend/Notes.txt

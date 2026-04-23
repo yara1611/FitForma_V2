@@ -11,9 +11,10 @@ public interface IExerciseRepository
     Task AddRoutineAsync(ExerciseRoutine routine);
     Task RemoveRoutineAsync(ExerciseRoutine routine);
     Task UpdateRoutineAsync(ExerciseRoutine routine);
-    Task<List<ExerciseRoutine>> GetAllRoutinesAsync();
+    //Task<List<ExerciseRoutine>> GetAllRoutinesAsync();
     Task RemoveExercisesInRoutineAsync(int routineId);
     //Task<ExerciseRoutine> FindRoutineByName(string name)
+    Task<List<ExerciseRoutine>> GetAllRoutinesByUserId(int userId);
     Task RemoveFromRoutineAsync(int routineId, int exerciseId);
 
     Task<Exercise> GetExerciseByIdAsync(int exerciseId);
@@ -32,6 +33,10 @@ public class ExerciseRepository : IExerciseRepository
     #region Routine
     public async Task AddRoutineAsync(ExerciseRoutine routine)
     {
+        // if (_context.Routines.FindAsync(routine.RoutineId) != null)
+        // {
+        //     throw new Exception("Already Exists");
+        // }
         await _context.Routines.AddAsync(routine);
         await _context.SaveChangesAsync();
     }
@@ -54,10 +59,11 @@ public class ExerciseRepository : IExerciseRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<ExerciseRoutine>> GetAllRoutinesAsync()
-    {
-        return await _context.Routines.AsNoTracking().ToListAsync();
-    }
+    // public async Task<List<ExerciseRoutine>> GetAllRoutinesAsync()
+    // {
+    //     return await _context.Routines.AsNoTracking().ToListAsync();
+    // }
+
     #endregion
 
     #region Exercise
@@ -77,6 +83,16 @@ public class ExerciseRepository : IExerciseRepository
     {
         return await _context.Exercises.AsNoTracking()
         .FirstOrDefaultAsync(e => e.ExerciseId == exerciseId);
+    }
+
+    public async Task<List<ExerciseRoutine>> GetAllRoutinesByUserId(int userId)
+    {
+        var exists = await _context.Users.AnyAsync(u => u.UserId == userId);
+
+        if (!exists)
+            throw new KeyNotFoundException("Routine not found");
+        //as no tracking faster and less memory
+        return await _context.Routines.Where(r => r.UserId == userId).AsNoTracking().ToListAsync();
     }
 
 

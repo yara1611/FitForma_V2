@@ -1,9 +1,13 @@
+using AutoMapper;
+
 public class MealService
 {
     private readonly IMealRepository _mealRepo;
-    public MealService(IMealRepository mealRepo)
+    private readonly IMapper _mapper;
+    public MealService(IMealRepository mealRepo,IMapper mapper)
     {
         _mealRepo = mealRepo;
+        _mapper=mapper;
     }
 
     #region Meal
@@ -30,14 +34,14 @@ public class MealService
     #endregion
 
     #region Plan
-    public async Task CreatePlanAsync(MealPlan plan)
+    public async Task CreatePlanAsync(MealPlan plan, int userId)
     {
-
+        plan.UserId = userId;
         await _mealRepo.AddPlanAsync(plan);
     }
     public async Task DeleteFromPlanAsync(int planId, int mealId)
     {
-        await _mealRepo.RemoveFromPlanAsync(planId,mealId);
+        await _mealRepo.RemoveFromPlanAsync(planId, mealId);
     }
 
     public async Task DeletePlanAsync(int id)
@@ -50,7 +54,7 @@ public class MealService
         var content = await _mealRepo.FindAllMealsInPlanAsync(id);
 
         if (content.Count != 0)
-            //delete content (forloop then remove)
+            //delete content
             await _mealRepo.RemoveMealsInPlanAsync(id);
 
 
@@ -61,18 +65,14 @@ public class MealService
     public async Task AddMealToPlanAsync(int planId, Meal meal)
     {
         var plan = await _mealRepo.GetPlanByIdAsync(planId);
+
         if (plan == null)
             throw new KeyNotFoundException("Plan not found");
 
-        if (plan.Meals == null)
-            throw new InvalidOperationException("Plan meals not loaded");
+        // attach meal to plan
+        meal.PlanId = planId;
 
-        if (plan.Meals.Any(e => e.MealId == meal.MealId))
-            throw new InvalidOperationException("Meal already exists in plan");
-        plan.Meals.Add(meal);
-
-        //update plan and save it
-        await _mealRepo.UpdatePlanAsync(plan);
+        await _mealRepo.AddMealAsync(meal);
     }
 
     public async Task<List<Meal>> ListPlanContentAsync(int planId)
@@ -91,14 +91,14 @@ public class MealService
         return await _mealRepo.GetPlanByIdAsync(id);
     }
 
-    public async Task EditPlanAsync(MealPlan plan)
+    public async Task EditPlanAsync(int id, UpdatePlanDto dto)
     {
-        var existingPlan = await _mealRepo.GetPlanByIdAsync(plan.PlanId);
+        var existingPlan = await _mealRepo.GetPlanByIdAsync(id);
         if (existingPlan == null)
-        {
             throw new KeyNotFoundException("Plan not found.");
-        }
-        await _mealRepo.UpdatePlanAsync(plan);
+        _mapper.Map(dto,existingPlan);
+        existingPlan.UpdatedAt = DateTime.UtcNow;
+        await _mealRepo.UpdatePlanAsync(existingPlan);
     }
     #endregion
 }

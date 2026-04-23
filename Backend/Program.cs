@@ -10,9 +10,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
+
 builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // OR: options.UseSqlServer() for PostgreSQL not sure yet
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 //Repos (scoped -> one instance per HTTP request)
 builder.Services.AddScoped<IUserRepository,UserRepository>();
