@@ -2,11 +2,6 @@ using Microsoft.EntityFrameworkCore;
 
 public interface IExerciseRepository
 {
-    //Why async?
-    /*
-    Repository methods are async because they perform I/O operations (database calls) 
-    and async prevents blocking threads, improving scalability in web APIs
-    */
     Task<ExerciseRoutine> GetRoutineByIdAsync(int routineId);
     Task AddRoutineAsync(ExerciseRoutine routine);
     Task RemoveRoutineAsync(ExerciseRoutine routine);

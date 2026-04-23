@@ -2,11 +2,6 @@ using Microsoft.EntityFrameworkCore;
 
 public interface IMealRepository
 {
-    //Why async?
-    /*
-    Repository methods are async because they perform I/O operations (database calls) 
-    and async prevents blocking threads, improving scalability in web APIs
-    */
     Task<MealPlan> GetPlanByIdAsync(int planId);
     Task AddPlanAsync(MealPlan plan);
     Task RemovePlanAsync(MealPlan plan);
