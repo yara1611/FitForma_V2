@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
     
+    private readonly UserManager<User> _userManager;
     private readonly UserService _userService;
-    public UserController(UserService userService)
+    public UserController(UserService userService,UserManager<User> userManager)
     {
+        _userManager=userManager;
         _userService=userService;
     }
     [HttpGet]
@@ -20,7 +23,11 @@ public class UserController : ControllerBase
     {
         try
         {
-            var user = await _userService.ListUserAsync(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+    {
+        return NotFound($"User with ID {id} was not found.");
+    }
             return Ok(user);
         }
         catch(Exception)
@@ -33,9 +40,23 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateUser(User user)
     {
-        await _userService.CreateUserAsync(user);
+        var newUser = new User
+        {
+            UserName=user.Email,
+            Email=user.Email,
+            Name=user.Name
+        };
+        var result = await _userManager.CreateAsync(newUser,"123Yara_");
+        if (result.Succeeded)
+        {
+            return Ok(new { 
+            Message = "User registered successfully", 
+            UserId = newUser.Id // This will now show the integer ID (e.g., 1, 2, 3)
+        });
+        }
+        //await _userService.CreateUserAsync(user);
         
-        return Ok(new { user.UserId, user.Name, user.Email });
+        return BadRequest(result.Errors);
     }
 
     [HttpDelete("{id}")]

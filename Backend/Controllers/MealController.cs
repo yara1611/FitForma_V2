@@ -103,7 +103,7 @@ public class MealPlanController : ControllerBase
 
 
     [HttpGet("{planId}/meals/{mealId}")]
-    public async Task<IActionResult> GetExercise(int planId,int mealId)
+    public async Task<IActionResult> GetMeal(int planId,int mealId)
     {
         
         return Ok(await _service.GetMealAsync(mealId));

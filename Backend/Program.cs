@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +12,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
+
+//Database
 builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // OR: options.UseSqlServer() for Sql server not sure yet
+builder.Services.AddIdentityCore<User>()
+    .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 

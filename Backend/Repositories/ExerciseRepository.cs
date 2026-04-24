@@ -6,7 +6,7 @@ public interface IExerciseRepository
     Task AddRoutineAsync(ExerciseRoutine routine);
     Task RemoveRoutineAsync(ExerciseRoutine routine);
     Task UpdateRoutineAsync(ExerciseRoutine routine);
-    //Task<List<ExerciseRoutine>> GetAllRoutinesAsync();
+    
     Task RemoveExercisesInRoutineAsync(int routineId);
     //Task<ExerciseRoutine> FindRoutineByName(string name)
     Task<List<ExerciseRoutine>> GetAllRoutinesByUserId(int userId);
@@ -54,10 +54,6 @@ public class ExerciseRepository : IExerciseRepository
         await _context.SaveChangesAsync();
     }
 
-    // public async Task<List<ExerciseRoutine>> GetAllRoutinesAsync()
-    // {
-    //     return await _context.Routines.AsNoTracking().ToListAsync();
-    // }
 
     #endregion
 
@@ -124,8 +120,6 @@ public class ExerciseRepository : IExerciseRepository
         await _context.SaveChangesAsync();
 
     }
-
-
     #endregion
 
 }

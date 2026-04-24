@@ -1,12 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
-public class User{
+public class User: IdentityUser<int>
+{
 
     [Key]
     public int UserId {set;get;}
     public string Name {set;get;} = null!;
-    public string Email {set;get;} = null!;
-    public string Password {set;get;}  = null!;//will be hashed
+    //public string Email {set;get;} = null!;
+    //public string Password {set;get;}  = null!;//will be hashed
     
     public DateTime CreatedAt {set;get;}= DateTime.UtcNow;
     public DateTime UpdatedAt {set;get;}= DateTime.UtcNow;
