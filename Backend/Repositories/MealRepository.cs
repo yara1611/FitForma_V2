@@ -85,7 +85,7 @@ public class MealRepository : IMealRepository
         var exists = await _context.Users.AnyAsync(u => u.UserId == userId);
 
         if (!exists)
-            throw new KeyNotFoundException("Plan not found");
+            throw new KeyNotFoundException("User not found");
         //as no tracking faster and less memory
         return await _context.Plans.Where(r => r.UserId == userId).AsNoTracking().ToListAsync();
     }

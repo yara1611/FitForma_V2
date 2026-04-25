@@ -17,7 +17,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>,int>
     {
         base.OnModelCreating(modelBuilder);
 
-        //User -> PI (1-1)
+        //User -> UP (1-1)
         modelBuilder.Entity<User>()
             .HasOne(u=>u.UserProfile)
             .WithOne(p=>p.User)
@@ -53,6 +53,11 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>,int>
             .WithOne(e=>e.Routine)
             .HasForeignKey(e=>e.RoutineId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        //save enum as string instead of int 
+        // modelBuilder.Entity<UserProfile>()
+        // .Property(x => x.ActivityLevel)
+        // .HasConversion<string>();
        
     }
     

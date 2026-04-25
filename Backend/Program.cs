@@ -27,11 +27,13 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<IMealRepository, MealRepository>();
+builder.Services.AddScoped<INutritionRepository, NutritionRepository>();
 
 //Services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ExerciseService>();
 builder.Services.AddScoped<MealService>();
+builder.Services.AddScoped<NutritionService>();
 
 builder.Services.AddOpenApi();
 
