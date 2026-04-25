@@ -283,50 +283,43 @@ namespace FitForma_V2.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PersonalInformation", b =>
+            modelBuilder.Entity("NutritionTarget", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("BMR")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Calories")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("CarbsGrams")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("FatsGrams")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("ProteinGrams")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("TDEE")
+                        .HasColumnType("double precision");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("DOB")
-                        .HasColumnType("timestamp with time zone");
+                    b.HasKey("Id");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.HasIndex("UserId");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Goal")
-                        .HasColumnType("text");
-
-                    b.Property<double>("Height")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("TargetCalories")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("TargetCarbs")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("TargetFats")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("TargetProtein")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Weight")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("PersonalInformation");
+                    b.ToTable("NutritionTargets");
                 });
 
             modelBuilder.Entity("User", b =>
@@ -407,6 +400,55 @@ namespace FitForma_V2.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("UserProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActivityLevel")
+                        .HasColumnType("text");
+
+                    b.Property<double?>("BodyFatPercent")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime>("DOB")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Goal")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Height")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Weight")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserProfiles");
                 });
 
             modelBuilder.Entity("Exercise", b =>
@@ -504,11 +546,22 @@ namespace FitForma_V2.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PersonalInformation", b =>
+            modelBuilder.Entity("NutritionTarget", b =>
                 {
                     b.HasOne("User", "User")
-                        .WithOne("PersonalInfo")
-                        .HasForeignKey("PersonalInformation", "UserId")
+                        .WithMany("NutritionTargets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UserProfile", b =>
+                {
+                    b.HasOne("User", "User")
+                        .WithOne("UserProfile")
+                        .HasForeignKey("UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -529,9 +582,11 @@ namespace FitForma_V2.Migrations
                 {
                     b.Navigation("MealPlans");
 
-                    b.Navigation("PersonalInfo");
+                    b.Navigation("NutritionTargets");
 
                     b.Navigation("Routines");
+
+                    b.Navigation("UserProfile");
                 });
 #pragma warning restore 612, 618
         }

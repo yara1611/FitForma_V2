@@ -47,7 +47,7 @@ public class UserService{
     }
 
     //PERSONAL INFO
-    public async Task CreatePersonalInfoAsync(int id,PersonalInformation pi)
+    public async Task CreatePersonalInfoAsync(int id,UserProfile pi)
     {
         var user = await _userRepo.GetByIdAsync(id);
         if (user == null) throw new Exception("User not found");

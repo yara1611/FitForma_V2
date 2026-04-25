@@ -6,7 +6,7 @@ public interface IUserRepository
     Task AddAsync(User user);
     Task UpdateAsync(User user);
     Task DeleteAsync(int id);
-    Task AddPersonalInfoAsync(PersonalInformation pi);
+    Task AddPersonalInfoAsync(UserProfile pi);
 }
 public class UserRepository : IUserRepository
 {
@@ -45,12 +45,12 @@ public class UserRepository : IUserRepository
         
         await _context.SaveChangesAsync();
     }
-    public async Task AddPersonalInfoAsync(PersonalInformation pi)
+    public async Task AddPersonalInfoAsync(UserProfile pi)
     {
-        var exists = await _context.PersonalInformation.AnyAsync(i=>i.UserId==pi.UserId);
+        var exists = await _context.UserProfiles.AnyAsync(i=>i.UserId==pi.UserId);
         if(exists)
             throw new InvalidOperationException("Personal info already exists for this user");
-        await _context.PersonalInformation.AddAsync(pi);
+        await _context.UserProfiles.AddAsync(pi);
         await _context.SaveChangesAsync(); // Ensures the info is saved to Post
     }
 }

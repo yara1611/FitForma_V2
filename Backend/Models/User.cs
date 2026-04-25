@@ -14,7 +14,8 @@ public class User: IdentityUser<int>
     public DateTime UpdatedAt {set;get;}= DateTime.UtcNow;
 
     // Navigation Properties
-    public virtual PersonalInformation? PersonalInfo { get; set; }
+    public virtual UserProfile? UserProfile { get; set; }
     public virtual List<ExerciseRoutine> Routines { get; set; } = new();
     public virtual List<MealPlan> MealPlans { get; set; } = new();
+    public virtual List<NutritionTarget> NutritionTargets { get; set; } = new();
 }

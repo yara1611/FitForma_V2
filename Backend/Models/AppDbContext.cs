@@ -6,11 +6,12 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>,int>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     public DbSet<User> Users { get; set; }
-    public DbSet<PersonalInformation> PersonalInformation {set;get;}
+    public DbSet<UserProfile> UserProfiles {set;get;}
     public DbSet<ExerciseRoutine> Routines{set;get;}
     public DbSet<Exercise> Exercises{set;get;}
     public DbSet<MealPlan> Plans {set;get;}
-    public DbSet<Meal> Meals{set;get;}
+    public DbSet<Meal> Meals {set;get;}
+    public DbSet<NutritionTarget> NutritionTargets{set;get;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,9 +19,9 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>,int>
 
         //User -> PI (1-1)
         modelBuilder.Entity<User>()
-            .HasOne(u=>u.PersonalInfo)
+            .HasOne(u=>u.UserProfile)
             .WithOne(p=>p.User)
-            .HasForeignKey<PersonalInformation>(p=>p.UserId)
+            .HasForeignKey<UserProfile>(p=>p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
         //User -> Routines (1-M)
         modelBuilder.Entity<User>()
@@ -31,6 +32,12 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>,int>
         //User -> Plans (1-M)
         modelBuilder.Entity<User>()
             .HasMany(u=>u.MealPlans)
+            .WithOne(p=>p.User)
+            .HasForeignKey(p=>p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        //User -> Nutrition Target (1-M)
+        modelBuilder.Entity<User>()
+            .HasMany(u=>u.NutritionTargets)
             .WithOne(p=>p.User)
             .HasForeignKey(p=>p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -46,6 +53,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>,int>
             .WithOne(e=>e.Routine)
             .HasForeignKey(e=>e.RoutineId)
             .OnDelete(DeleteBehavior.Cascade);
+       
     }
     
 }

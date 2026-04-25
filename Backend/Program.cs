@@ -19,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // OR: options.UseSqlServer() for Sql server not sure yet
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddAuthentication();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
