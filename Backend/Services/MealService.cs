@@ -1,6 +1,18 @@
 using AutoMapper;
-
-public class MealService
+public interface IMealService
+{
+    Task CreateMealAsync(Meal meal);
+    Task<Meal> GetMealAsync(int id);
+    Task DeleteMealAsync(int id);
+    Task CreatePlanAsync(MealPlan plan, int userId);
+    Task DeletePlanAsync(int id);
+    Task AddMealToPlanAsync(int planId, Meal meal);
+    Task<List<Meal>> ListPlanContentAsync(int planId);
+    Task<MealPlan> GetPlanAsync(int id);
+    Task EditPlanAsync(int id, UpdatePlanDto dto);
+    Task<List<MealPlan>> GetAllPlansByUserId(int userId);
+}
+public class MealService:IMealService
 {
     private readonly IMealRepository _mealRepo;
     private readonly IMapper _mapper;
@@ -39,10 +51,6 @@ public class MealService
     {
         plan.UserId = userId;
         await _mealRepo.AddPlanAsync(plan);
-    }
-    public async Task DeleteFromPlanAsync(int planId, int mealId)
-    {
-        await _mealRepo.RemoveFromPlanAsync(planId, mealId);
     }
 
     public async Task DeletePlanAsync(int id)

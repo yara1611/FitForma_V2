@@ -31,8 +31,8 @@ builder.Services.AddScoped<INutritionRepository, NutritionRepository>();
 
 //Services
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<ExerciseService>();
-builder.Services.AddScoped<MealService>();
+builder.Services.AddScoped<IExerciseService,ExerciseService>();
+builder.Services.AddScoped<IMealService,MealService>();
 builder.Services.AddScoped<NutritionService>();
 
 builder.Services.AddOpenApi();

@@ -20,9 +20,10 @@ PUT MEAL
 [Route("[controller]")]
 public class MealPlanController : ControllerBase
 {
-    private readonly MealService _service;
+    //make the services have interfaces
+    private readonly IMealService _service;
     private readonly IMapper _mapper;
-    public MealPlanController(MealService service,IMapper mapper)
+    public MealPlanController(IMealService service,IMapper mapper)
     {
         _service = service;
         _mapper=mapper;
@@ -89,7 +90,7 @@ public class MealPlanController : ControllerBase
     public async Task<IActionResult> DeleteFromPlan(int planId, int mealId)
     {
         
-        await _service.DeleteFromPlanAsync(planId,mealId);
+        await _service.DeleteMealAsync(mealId);
         
         return NoContent();
     }

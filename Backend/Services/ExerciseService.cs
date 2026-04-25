@@ -1,6 +1,20 @@
 using AutoMapper;
 
-public class ExerciseService
+public interface IExerciseService
+{
+    Task CreateExerciseAsync(Exercise exercise);
+    Task<Exercise> GetExerciseAsync(int id);
+    Task DeleteExerciseAsync(int id);
+    Task CreateRoutineAsync(ExerciseRoutine routine, int userId);
+    Task DeleteRoutineAsync(int id);
+    Task AddExerciseToRoutineAsync(int routineId, Exercise exercise);
+    Task<List<Exercise>> ListRoutineContentAsync(int routineId);
+    Task<ExerciseRoutine> GetRoutineAsync(int id);
+    Task EditRoutineAsync(int id, UpdateRoutineDto dto);
+    Task<List<ExerciseRoutine>> GetAllRoutinesByUserId(int userId);
+}
+
+public class ExerciseService :IExerciseService
 {
     private readonly IExerciseRepository _exerciseRepo;
     private readonly IMapper _mapper;
@@ -26,7 +40,7 @@ public class ExerciseService
         var exercise = await _exerciseRepo.GetExerciseByIdAsync(id);
         if (exercise == null)
         {
-            throw new KeyNotFoundException("Meal not fount");
+            throw new KeyNotFoundException("Meal not found");
 
         }
         await _exerciseRepo.RemoveExerciseAsync(exercise);
