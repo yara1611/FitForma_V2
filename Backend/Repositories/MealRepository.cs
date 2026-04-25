@@ -82,7 +82,7 @@ public class MealRepository : IMealRepository
 
     public async Task<List<MealPlan>> GetAllPlansByUserId(int userId)
     {
-        var exists = await _context.Users.AnyAsync(u => u.UserId == userId);
+        var exists = await _context.Users.AnyAsync(u => u.Id == userId);
 
         if (!exists)
             throw new KeyNotFoundException("User not found");

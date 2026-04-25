@@ -69,7 +69,7 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, User user) //DTO later
     {
-        if (id != user.UserId)
+        if (id != user.Id)
         {
             return BadRequest("ID mismatch");
         }

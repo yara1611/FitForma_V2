@@ -36,7 +36,7 @@ public class UserService{
 
     public async Task UpdateUserAsync(User user)
     {
-        var exisitingUser = await _userRepo.GetByIdAsync(user.UserId);
+        var exisitingUser = await _userRepo.GetByIdAsync(user.Id);
         if (exisitingUser == null)
         {
             throw new Exception("User not found.");

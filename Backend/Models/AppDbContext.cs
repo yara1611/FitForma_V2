@@ -54,14 +54,14 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
             .HasForeignKey(e => e.RoutineId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<UserProfile>()
-            .Property(x => x.Goal)
-            .HasConversion<string>();
+        // modelBuilder.Entity<UserProfile>()
+        //     .Property(x => x.Goal)
+        //     .HasConversion<string>();
 
         //save enum as string instead of int 
-        modelBuilder.Entity<UserProfile>()
-        .Property(x => x.ActivityLevel)
-        .HasConversion<string>();
+        // modelBuilder.Entity<UserProfile>()
+        // .Property(x => x.ActivityLevel)
+        // .HasConversion<string>();
 
     }
 

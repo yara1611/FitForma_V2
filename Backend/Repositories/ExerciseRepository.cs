@@ -78,7 +78,7 @@ public class ExerciseRepository : IExerciseRepository
 
     public async Task<List<ExerciseRoutine>> GetAllRoutinesByUserId(int userId)
     {
-        var exists = await _context.Users.AnyAsync(u => u.UserId == userId);
+        var exists = await _context.Users.AnyAsync(u => u.Id == userId);
 
         if (!exists)
             throw new KeyNotFoundException("Routine not found");

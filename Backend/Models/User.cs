@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Identity;
 public class User: IdentityUser<int>
 {
 
-    [Key]
-    public int UserId {set;get;}
     public string Name {set;get;} = null!;
     //public string Email {set;get;} = null!;
     //public string Password {set;get;}  = null!;//will be hashed
