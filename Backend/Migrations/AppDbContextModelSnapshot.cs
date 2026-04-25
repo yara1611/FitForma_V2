@@ -411,6 +411,7 @@ namespace FitForma_V2.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ActivityLevel")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<double?>("BodyFatPercent")
@@ -428,6 +429,7 @@ namespace FitForma_V2.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Goal")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<double>("Height")
