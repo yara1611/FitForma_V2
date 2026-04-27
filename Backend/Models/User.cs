@@ -5,7 +5,7 @@ public class User: IdentityUser<int>
 {
 
     public string Name {set;get;} = null!;
-    //public string Email {set;get;} = null!;
+    //public string Email {set;get;} = null!; //they are in idenitty user
     //public string Password {set;get;}  = null!;//will be hashed
     
     public DateTime CreatedAt {set;get;}= DateTime.UtcNow;

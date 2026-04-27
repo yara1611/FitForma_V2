@@ -9,8 +9,10 @@ public class UserService{
     public async Task CreateUserAsync(User user)
     {
         await _userRepo.AddAsync(user);
-        
+           
     }
+
+    
 
     public async Task<List<User>> ListAllUsersAsync()
     {
@@ -29,8 +31,8 @@ public class UserService{
 
     public async Task DeleteUserAsync(int id)
     {
-        
-       await _userRepo.DeleteAsync(id);
+        var user = await _userRepo.GetByIdAsync(id);
+        await _userRepo.DeleteAsync(user);
     }
 
 
@@ -47,12 +49,13 @@ public class UserService{
     }
 
     //PERSONAL INFO
-    public async Task CreatePersonalInfoAsync(int id,UserProfile pi)
+    public async Task CreateUserProfileAsync(int id,UserProfile pi)
     {
-        var user = await _userRepo.GetByIdAsync(id);
-        if (user == null) throw new Exception("User not found");
+        var user = await _userRepo.GetByIdAsync(id) ?? throw new Exception("User not found");
+        var exists = await _userRepo.UserProfileExists(pi.Id);
+        if(exists) throw new Exception("User Profile already exists");
         pi.UserId = id;
-        await _userRepo.AddPersonalInfoAsync(pi);
+        await _userRepo.CreateUserProfile(pi);
         
     }
 }

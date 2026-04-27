@@ -1,17 +1,33 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    
-    private readonly UserManager<User> _userManager;
+
+    private readonly UserManager<User> _userManager; //what does the userManager do? manage the user identity table
     private readonly UserService _userService;
-    public UserController(UserService userService,UserManager<User> userManager)
+    public UserController(UserService userService, UserManager<User> userManager)
     {
-        _userManager=userManager;
-        _userService=userService;
+        _userManager = userManager;
+        _userService = userService;
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var user = await _userManager.FindByIdAsync(id);
+        if(user==null)
+            return BadRequest();
+        var claims = User.Claims.Select(c => new { c.Type, c.Value });
+        return Ok(user);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
@@ -21,19 +37,13 @@ public class UserController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserAsync(int id)
     {
-        try
-        {
+        
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
-    {
-        return NotFound($"User with ID {id} was not found.");
-    }
+            {
+                return NotFound($"User with ID {id} was not found.");
+            }
             return Ok(user);
-        }
-        catch(Exception)
-        {
-            return NotFound("User not found or has been deleted.");
-        }
         
     }
 
@@ -42,29 +52,31 @@ public class UserController : ControllerBase
     {
         var newUser = new User
         {
-            UserName=user.Email,
-            Email=user.Email,
-            Name=user.Name
+            UserName = user.Email,
+            Email = user.Email,
+            Name = user.Name
         };
-        var result = await _userManager.CreateAsync(newUser,"123Yara_");
+        var result = await _userManager.CreateAsync(newUser, "123Yara_");
         if (result.Succeeded)
         {
-            return Ok(new { 
-            Message = "User registered successfully", 
-            UserId = newUser.Id // This will now show the integer ID (e.g., 1, 2, 3)
-        });
+            return Ok(new
+            {
+                Message = "User registered successfully",
+                UserId = newUser.Id // This will now show the integer ID
+            });
         }
-        //await _userService.CreateUserAsync(user);
-        
+        //await _userService.CreateUserAsync(user); // i dont need this khalas
+
         return BadRequest(result.Errors);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        
+       
+
         await _userService.DeleteUserAsync(id);
-        return NoContent();;
+        return NoContent(); ;
     }
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, User user) //DTO later
@@ -73,16 +85,10 @@ public class UserController : ControllerBase
         {
             return BadRequest("ID mismatch");
         }
-        try
-        {
+        
             await _userService.UpdateUserAsync(user);
             return NoContent();
-        }
-        catch (KeyNotFoundException e)
-        {
-            
-            return NotFound(e.Message);
-        }
+        
     }
-     
+
 }

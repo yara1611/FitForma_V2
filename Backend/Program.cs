@@ -1,5 +1,8 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,14 +15,31 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
-
 //Database
 builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // OR: options.UseSqlServer() for Sql server not sure yet
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AppDbContext>();
-builder.Services.AddAuthentication();
+
+//Authorization
+var jwtSection = builder.Configuration.GetSection("Jwt");
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience=true,
+            ValidateIssuer=true,
+            ValidateLifetime=true,
+            ValidateIssuerSigningKey=true,
+            ValidIssuer=jwtSection["Issuer"],
+            ValidAudience=jwtSection["Audience"],
+            IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]))
+        };
+    });
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
@@ -34,6 +54,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IExerciseService,ExerciseService>();
 builder.Services.AddScoped<IMealService,MealService>();
 builder.Services.AddScoped<NutritionService>();
+builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddOpenApi();
 
