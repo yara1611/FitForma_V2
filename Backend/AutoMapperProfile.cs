@@ -16,5 +16,8 @@ public class AutoMapperProfile : Profile
         CreateMap<Meal,CreateMealDto>().ReverseMap();
         CreateMap<UpdatePlanDto,MealPlan>()
         .ForAllMembers(opts=>opts.Condition((src,dest,srcMember)=>srcMember!=null));
+
+        //User
+        CreateMap<UserResponseDto,User>();
     }
 }
