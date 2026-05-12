@@ -20,7 +20,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // OR: options.UseSqlServer() for Sql server not sure yet
 builder.Services.AddIdentityCore<User>()
-    .AddEntityFrameworkStores<AppDbContext>();
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddSignInManager();
 
 //Authorization
 var jwtSection = builder.Configuration.GetSection("Jwt");
@@ -55,6 +56,7 @@ builder.Services.AddScoped<IExerciseService,ExerciseService>();
 builder.Services.AddScoped<IMealService,MealService>();
 builder.Services.AddScoped<NutritionService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<NutritionCalculator>(); //why scoped
 
 builder.Services.AddOpenApi();
 
