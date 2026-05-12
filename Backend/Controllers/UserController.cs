@@ -4,6 +4,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+//auth the class and whitelist public endpoints if needed.
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
@@ -27,7 +29,6 @@ public class UserController : ControllerBase
         var user = await _userManager.FindByIdAsync(id);
         if(user==null)
             return BadRequest();
-        var claims = User.Claims.Select(c => new { c.Type, c.Value });
         return Ok(_mapper.Map<UserResponseDto>(user));
     }
 
@@ -36,7 +37,7 @@ public class UserController : ControllerBase
     {
         var users = await _userService.ListAllUsersAsync();
        
-        return Ok( _mapper.Map<UserResponseDto>(users));
+        return Ok( _mapper.Map<List<UserResponseDto>>(users));
     }
 
     [HttpGet("{id}")]
