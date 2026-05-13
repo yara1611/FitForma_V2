@@ -42,9 +42,15 @@ public class MealRepository : IMealRepository
         await _context.SaveChangesAsync();
     }
 
+    //get plan by id w/o meals
     public async Task<MealPlan> GetPlanByIdAsync(int planId)
     {
         return await _context.Plans.FindAsync(planId);
+
+        //to return with meals, use this:
+        //return await _context.Plans
+        // .Include(p => p.Meals)
+        // .FirstOrDefaultAsync(p => p.PlanId == planId);
     }
 
     public async Task UpdatePlanAsync(MealPlan plan)

@@ -1,4 +1,4 @@
-public class CreateExerciseDto
+public class ExerciseDto
 {
     public string Name { get; set; } = null!;
     public string? TargetMuscle { get; set; }

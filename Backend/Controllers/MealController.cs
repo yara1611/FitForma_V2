@@ -14,9 +14,11 @@ GET MEAL
 GET ALL PLANS (of user)
 ------------
 NOT DONE:
-PUT MEAL
+PUT MEAL -> Skipped for now, can be done in the future if needed. For now, if user wants to edit meal details, they can just delete and re-add the meal with updated details.
 
 */
+
+//[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class MealPlanController : ControllerBase
@@ -39,8 +41,9 @@ public class MealPlanController : ControllerBase
     {
         var plan = await _service.GetPlanAsync(id); 
         if(plan==null)
-            return NoContent();
-        return Ok(plan);
+            return NotFound();
+       
+        return Ok(_mapper.Map<PlanResponseDto>(plan));
     }
     
     //Routine not exists -> create -> 200
@@ -55,7 +58,7 @@ public class MealPlanController : ControllerBase
         }
         var plan = _mapper.Map<MealPlan>(dto);
         await _service.CreatePlanAsync(plan, int.Parse(userId));
-        return Ok(plan);
+        return Ok();
     }
     
     [HttpDelete("{id}")]
@@ -83,12 +86,14 @@ public class MealPlanController : ControllerBase
         {
             return Unauthorized("User ID not found in token.");
         }
-        return Ok(await _service.GetAllPlansByUserId(int.Parse(userId)));
+        var plans = await _service.GetAllPlansByUserId(int.Parse(userId));
+        
+        return Ok(_mapper.Map<List<PlanResponseDto>>(plans));
     }
 
     //Meals
     [HttpPost("{planId}/meals")]
-    public async Task<IActionResult> AddToPlan(int planId,[FromBody]CreateMealDto dto)
+    public async Task<IActionResult> AddToPlan(int planId,[FromBody]MealDto dto)
     {
         var meal = _mapper.Map<Meal>(dto);
         if (meal == null)
@@ -122,5 +127,5 @@ public class MealPlanController : ControllerBase
         return Ok(await _service.GetMealAsync(mealId));
     }
 
-    //PUT meal -> update meal details (name, calories, etc) -> mealId in body or url?
+    
 }

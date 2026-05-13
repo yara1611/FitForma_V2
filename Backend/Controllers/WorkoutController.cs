@@ -14,9 +14,10 @@ GET ALL WORKOUTS (of user)
 GET Exercise
 ------------
 NOT DONE:
-PUT EXERCISE
+PUT EXERCISE -> Skipped for now, can be done in the future if needed. For now, if user wants to edit exercise details, they can just delete and re-add the exercise with updated details.
 
 */
+//[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class WorkoutController : ControllerBase
@@ -39,7 +40,7 @@ public class WorkoutController : ControllerBase
         var routine = await _service.GetRoutineAsync(id); 
         if(routine==null)
             return NoContent();
-        return Ok(routine);
+        return Ok(_mapper.Map<RoutineResponseDto>(routine));
     }
     
     //Routine not exists -> create -> 200
@@ -54,7 +55,7 @@ public class WorkoutController : ControllerBase
         }
         var routine = _mapper.Map<ExerciseRoutine>(dto);
         await _service.CreateRoutineAsync(routine, int.Parse(userId));
-        return Ok(routine);
+        return Ok("Created Successfully");
     }
     
     [HttpDelete("{id}")]
@@ -70,7 +71,7 @@ public class WorkoutController : ControllerBase
     {
         
         await _service.EditRoutineAsync(id, dto);
-        return Ok(dto);
+        return NoContent();
     }
 
 
@@ -81,18 +82,19 @@ public class WorkoutController : ControllerBase
         {
             return Unauthorized("User ID not found in token.");
         }
-        return Ok(await _service.GetAllRoutinesByUserId(int.Parse(id)));
+        var routines= await _service.GetAllRoutinesByUserId(int.Parse(id));
+        return Ok(_mapper.Map<List<RoutineResponseDto>>(routines));
     }
 
     //Exercises
     [HttpPost("{routineId}/exercises")]
-    public async Task<IActionResult> AddToRoutine(int routineId,[FromBody]CreateExerciseDto dto)
+    public async Task<IActionResult> AddToRoutine(int routineId,[FromBody]ExerciseDto dto)
     {
         var exercise = _mapper.Map<Exercise>(dto);
         if (exercise == null)
             return BadRequest("Exercise is required");
         await _service.AddExerciseToRoutineAsync(routineId,exercise);
-        return Ok(exercise);
+        return Ok("Added Successfully");
 
     }
 
@@ -119,5 +121,4 @@ public class WorkoutController : ControllerBase
         return Ok(await _service.GetExerciseAsync(exerciseId));
     }
 
-    //put exercise -> update exercise details (name, sets, reps, etc) -> exerciseId in body or url?
 }

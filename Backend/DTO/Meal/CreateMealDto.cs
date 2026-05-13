@@ -1,6 +1,5 @@
-public class CreateMealDto
+public class MealDto
 {
-    public int PlanId {get;set;}
     public string Name {get;set;}= null!;
     public double Calories {get;set;}
     public double Protein {get;set;}
