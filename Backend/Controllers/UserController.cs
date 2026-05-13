@@ -14,18 +14,25 @@ public class UserController : ControllerBase
     private readonly UserManager<User> _userManager; //what does the userManager do? manage the user identity table
     private readonly UserService _userService;
     private readonly IMapper _mapper;
-    public UserController(UserService userService, UserManager<User> userManager, IMapper mapper)
+    private readonly NutritionService _nutritionService;
+    public UserController(UserService userService, UserManager<User> userManager, IMapper mapper, NutritionService nutritionService)
     {
         _userManager = userManager;
         _userService = userService;
         _mapper=mapper;
+        _nutritionService=nutritionService;
     }
 
     [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        
+        var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (id == null)
+        {
+            return Unauthorized("User ID not found in token.");
+        }
         var user = await _userManager.FindByIdAsync(id);
         if(user==null)
             return BadRequest();
@@ -79,8 +86,6 @@ public class UserController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-       
-
         await _userService.DeleteUserAsync(id);
         return NoContent(); ;
     }
@@ -96,5 +101,44 @@ public class UserController : ControllerBase
             return NoContent();
         
     }
+
+    [HttpPost("{id}/profile")]
+    public async Task<IActionResult> CreateUserProfile(int id,UserProfile pi)
+    {
+        await _userService.CreateUserProfileAsync(id,pi);
+        return Ok();
+    }
+    [HttpGet("{id}/profile")]
+    public async Task<IActionResult> GetProfile()
+    {
+        var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (id == null)
+        {
+            return Unauthorized("User ID not found in token.");
+        }
+        return Ok(await _userService.GetUserProfileAsync(int.Parse(id)));
+    }
+
+    //PUT /user/profile   → update profile, recalculate targets
+    [HttpPut("{id}/profile")]
+    public async Task<IActionResult> UpdateProfile([FromBody]UserProfileDto userProfile) //why dto? to avoid overposting and to have more control over the data that is being updated
+    {
+        var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (id == null)
+        {
+            return Unauthorized("User ID not found in token.");
+        }
+        await _userService.UpdateUserProfileAsync(int.Parse(id), userProfile);
+        return Ok();
+    }
+
+    //GET /user/nutrition — return nutrition targets
+    [HttpGet("{id}/nutrition")]
+    public async Task<IActionResult> GetTargets(int id)
+    {
+        //await _userService.GetUserProfileAsync(id);
+        return Ok(await _nutritionService.GetTargetsOfUserAsync(id));
+    }
+    //Add [Authorize] to workout and meal controllers + read userId from claims instead of query params
 
 }

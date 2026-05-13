@@ -18,6 +18,11 @@ public class AutoMapperProfile : Profile
         .ForAllMembers(opts=>opts.Condition((src,dest,srcMember)=>srcMember!=null));
 
         //User
-        CreateMap<UserResponseDto,User>();
+        CreateMap<User,UserResponseDto>().ReverseMap();
+
+        //only update the fields tat are not null in the source object (dto)
+        CreateMap<UserProfileDto,UserProfile>()
+        .ForAllMembers(opts => opts.Condition((src,dest,srcMember)=>srcMember!=null));
+        
     }
 }

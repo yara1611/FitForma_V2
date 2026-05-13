@@ -8,6 +8,8 @@ public interface IUserRepository
     Task DeleteAsync(User user);
     Task CreateUserProfile(UserProfile pi);
     Task<bool> UserProfileExists(int id);
+    Task<UserProfile> GetUserProfileAsync(int id);
+    Task UpdateProfileAsync(UserProfile profile);
 }
 public class UserRepository : IUserRepository
 {
@@ -53,5 +55,17 @@ public class UserRepository : IUserRepository
     public async Task<bool> UserProfileExists(int id)
     {
         return await _context.UserProfiles.AnyAsync(i=>i.UserId==id);
+    }
+
+    public Task<UserProfile> GetUserProfileAsync(int userId)
+    {
+        return _context.UserProfiles.FirstOrDefaultAsync(i=>i.UserId==userId);
+    }
+
+    public async Task UpdateProfileAsync(UserProfile profile)
+    {
+        _context.UserProfiles.Update(profile);
+        
+        await _context.SaveChangesAsync();
     }
 }
