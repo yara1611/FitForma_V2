@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 /*
@@ -42,13 +43,18 @@ public class MealPlanController : ControllerBase
         return Ok(plan);
     }
     
-    //ROutine not exists -> create -> 200
+    //Routine not exists -> create -> 200
     //Exists -> duplicate key
     [HttpPost]
-    public async Task<IActionResult> CreatePlan([FromBody] CreatePlanDto dto, int userId)
+    public async Task<IActionResult> CreatePlan([FromBody] CreatePlanDto dto)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return Unauthorized("User ID not found in token.");
+        }
         var plan = _mapper.Map<MealPlan>(dto);
-        await _service.CreatePlanAsync(plan, userId);
+        await _service.CreatePlanAsync(plan, int.Parse(userId));
         return Ok(plan);
     }
     
@@ -65,13 +71,19 @@ public class MealPlanController : ControllerBase
     {
         
         await _service.EditPlanAsync(id, dto);
-        return Ok(dto);
+        return NoContent();
     }
 
-    [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetMealPlansByUserIdAsync(int userId)
+    [HttpGet("user")]
+    public async Task<IActionResult> GetMealPlansByUserIdAsync()
     {
-        return Ok(await _service.GetAllPlansByUserId(userId));
+        //get current user id from token
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return Unauthorized("User ID not found in token.");
+        }
+        return Ok(await _service.GetAllPlansByUserId(int.Parse(userId)));
     }
 
     //Meals
@@ -109,4 +121,6 @@ public class MealPlanController : ControllerBase
         
         return Ok(await _service.GetMealAsync(mealId));
     }
+
+    //PUT meal -> update meal details (name, calories, etc) -> mealId in body or url?
 }

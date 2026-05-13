@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 /*
@@ -41,13 +42,18 @@ public class WorkoutController : ControllerBase
         return Ok(routine);
     }
     
-    //ROutine not exists -> create -> 200
+    //Routine not exists -> create -> 200
     //Exists -> duplicate key
     [HttpPost]
-    public async Task<IActionResult> CreateRoutine([FromBody] CreateRoutineDto dto, int userId)
+    public async Task<IActionResult> CreateRoutine([FromBody] CreateRoutineDto dto)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return Unauthorized("User ID not found in token.");
+        }
         var routine = _mapper.Map<ExerciseRoutine>(dto);
-        await _service.CreateRoutineAsync(routine, userId);
+        await _service.CreateRoutineAsync(routine, int.Parse(userId));
         return Ok(routine);
     }
     
@@ -68,10 +74,14 @@ public class WorkoutController : ControllerBase
     }
 
 
-    [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetWorkoutsByUserIdAsync(int userId)
-    {
-        return Ok(await _service.GetAllRoutinesByUserId(userId));
+    [HttpGet("user")]
+    public async Task<IActionResult> GetWorkoutsByUserIdAsync()
+    {   var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (id == null)
+        {
+            return Unauthorized("User ID not found in token.");
+        }
+        return Ok(await _service.GetAllRoutinesByUserId(int.Parse(id)));
     }
 
     //Exercises
@@ -108,4 +118,6 @@ public class WorkoutController : ControllerBase
         
         return Ok(await _service.GetExerciseAsync(exerciseId));
     }
+
+    //put exercise -> update exercise details (name, sets, reps, etc) -> exerciseId in body or url?
 }

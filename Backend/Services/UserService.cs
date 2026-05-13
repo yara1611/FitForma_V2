@@ -54,6 +54,7 @@ public class UserService{
         await _userRepo.UpdateAsync(user);
     }
 
+    
     //PERSONAL INFO
     public async Task CreateUserProfileAsync(int id,UserProfile pi)
     {
