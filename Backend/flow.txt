@@ -1,0 +1,19 @@
+Meal generation
+What does the user do?
+What decisions do they need to make?
+WHat systems or services are involved?
+where might the get stuck?
+#Steps
+- User clicks "Generate Meals" - trigger
+- service takes the information stored in NutritionTargets - input
+- service has a constant number of meals (3) - input
+- hit calories and hit macros and no duplicates in one meal - constrains
+- saves the one mealplan with multiple entries so at the end we'll have3 meal plans
+- breakfast targets 25%, L 35% , D 40%
+
+One issue — values are per 100g, not per serving. You have two options:
+
+Assume a fixed serving size (e.g. 200g) and multiply all values by 2
+Add a ServingGrams column with a default of 200g
+
+I'd go with option 1 for simplicity — fix serving at 200g, multiply macros accordingly when seeding.
