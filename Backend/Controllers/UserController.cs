@@ -139,6 +139,5 @@ public class UserController : ControllerBase
         //await _userService.GetUserProfileAsync(id);
         return Ok(await _nutritionService.GetTargetsOfUserAsync(id));
     }
-    //Add [Authorize] to workout and meal controllers + read userId from claims instead of query params
-
+    
 }
