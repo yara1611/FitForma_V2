@@ -60,6 +60,7 @@ builder.Services.AddScoped<IMealService,MealService>();
 builder.Services.AddScoped<NutritionService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<NutritionCalculator>(); //why scoped
+builder.Services.AddScoped<MealGeneratorService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddEndpointsApiExplorer();

@@ -26,10 +26,12 @@ public class MealPlanController : ControllerBase
     //make the services have interfaces
     private readonly IMealService _service;
     private readonly IMapper _mapper;
-    public MealPlanController(IMealService service,IMapper mapper)
+    private readonly MealGeneratorService _generatorService;
+    public MealPlanController(IMealService service,IMapper mapper,MealGeneratorService generatorService)
     {
         _service = service;
         _mapper=mapper;
+        _generatorService=generatorService;
     }
 
 
@@ -125,6 +127,13 @@ public class MealPlanController : ControllerBase
     {
         
         return Ok(await _service.GetMealAsync(mealId));
+    }
+
+    [HttpGet("generate")]
+    public async Task<IActionResult> GenerateMealPlan()
+    {
+        _generatorService.Generate();
+        return Ok("Not implemented yet");
     }
 
     
